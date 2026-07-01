@@ -1,0 +1,61 @@
+'use client';
+
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { Brand } from '@/components/layout/brand';
+import { ThemeToggle } from '@/components/shared/theme-toggle';
+import { useAuthStore } from '@/store/auth.store';
+import { ROLE_HOME } from '@/constants';
+import { Sparkles, Target, ShieldCheck } from 'lucide-react';
+
+export default function AuthLayout({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
+  const user = useAuthStore((s) => s.user);
+
+  // Already signed in? Bounce to the role home.
+  useEffect(() => {
+    if (user) router.replace(ROLE_HOME[user.role]);
+  }, [user, router]);
+
+  return (
+    <div className="grid min-h-screen lg:grid-cols-2">
+      {/* Brand / marketing panel */}
+      <div className="relative hidden flex-col justify-between bg-primary p-12 text-primary-foreground lg:flex">
+        <Brand href="/" className="text-primary-foreground" />
+        <div className="space-y-6">
+          <h2 className="text-3xl font-bold leading-tight">
+            Bridge into the internship that fits you.
+          </h2>
+          <ul className="space-y-4 text-primary-foreground/90">
+            <li className="flex items-start gap-3">
+              <Target className="mt-0.5 h-5 w-5 shrink-0" />
+              <span>Explainable AI match scores on every internship.</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <Sparkles className="mt-0.5 h-5 w-5 shrink-0" />
+              <span>Personalised skill-gap analysis and learning paths.</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0" />
+              <span>Verified companies and a clean hiring pipeline.</span>
+            </li>
+          </ul>
+        </div>
+        <p className="text-sm text-primary-foreground/70">
+          © {new Date().getFullYear()} InternBridge
+        </p>
+      </div>
+
+      {/* Form panel */}
+      <div className="relative flex items-center justify-center p-6">
+        <div className="absolute right-4 top-4 flex items-center gap-2 lg:hidden">
+          <Brand href="/" />
+        </div>
+        <div className="absolute right-4 top-4">
+          <ThemeToggle />
+        </div>
+        <div className="w-full max-w-md">{children}</div>
+      </div>
+    </div>
+  );
+}
