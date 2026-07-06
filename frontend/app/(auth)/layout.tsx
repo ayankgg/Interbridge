@@ -1,25 +1,44 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { Brand } from '@/components/layout/brand';
 import { ThemeToggle } from '@/components/shared/theme-toggle';
+import { AuthAnimation } from '@/components/shared/auth-animation';
 import { useAuthStore } from '@/store/auth.store';
 import { ROLE_HOME } from '@/constants';
 import { Sparkles, Target, ShieldCheck } from 'lucide-react';
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
+  const pathname = usePathname();
   const user = useAuthStore((s) => s.user);
+  // Login & register share the animated full-page background + centered card.
+  const centered = pathname === '/login' || pathname === '/register';
 
   // Already signed in? Bounce to the role home.
   useEffect(() => {
     if (user) router.replace(ROLE_HOME[user.role]);
   }, [user, router]);
 
+  if (centered) {
+    return (
+      <div className="relative flex min-h-screen items-center justify-center overflow-x-hidden bg-white p-6">
+        <AuthAnimation />
+        <div className="absolute left-6 top-6 z-10">
+          <Brand href="/" />
+        </div>
+        <div className="absolute right-6 top-6 z-10">
+          <ThemeToggle />
+        </div>
+        <div className="relative z-10 w-full max-w-md py-10">{children}</div>
+      </div>
+    );
+  }
+
+  // Other auth pages: two-column brand/marketing layout.
   return (
     <div className="grid min-h-screen lg:grid-cols-2">
-      {/* Brand / marketing panel */}
       <div className="relative hidden flex-col justify-between bg-primary p-12 text-primary-foreground lg:flex">
         <Brand href="/" className="text-primary-foreground" />
         <div className="space-y-6">
@@ -46,7 +65,6 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         </p>
       </div>
 
-      {/* Form panel */}
       <div className="relative flex items-center justify-center p-6">
         <div className="absolute right-4 top-4 flex items-center gap-2 lg:hidden">
           <Brand href="/" />

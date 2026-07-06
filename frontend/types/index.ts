@@ -172,6 +172,11 @@ export interface Student {
   profileCompleteness: number;
   jobSeekingStatus: 'active' | 'passive' | 'closed';
   consent: { candidateDiscovery: boolean; dataProcessing: boolean };
+  whatsappNumber?: string;
+  notificationPreferences: {
+    email: { applicationUpdates: boolean; newMatches: boolean };
+    whatsapp: { enabled: boolean; applicationUpdates: boolean; newMatches: boolean };
+  };
   createdAt: string;
   updatedAt: string;
 }

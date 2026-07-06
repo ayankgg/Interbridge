@@ -81,6 +81,13 @@ export const env = {
     from: optional('EMAIL_FROM', 'InternBridge <no-reply@internbridge.com>'),
   },
 
+  whatsapp: {
+    accountSid: optional('TWILIO_ACCOUNT_SID', ''),
+    authToken: optional('TWILIO_AUTH_TOKEN', ''),
+    // Twilio WhatsApp sender, e.g. "whatsapp:+14155238886"
+    fromNumber: optional('TWILIO_WHATSAPP_FROM', ''),
+  },
+
   rateLimit: {
     windowMs: parseInt(optional('RATE_LIMIT_WINDOW_MS', '900000'), 10),
     max: parseInt(optional('RATE_LIMIT_MAX', '200'), 10),

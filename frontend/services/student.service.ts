@@ -25,6 +25,8 @@ export interface StudentProfileUpdate {
   certifications?: Student['certifications'];
   jobSeekingStatus?: Student['jobSeekingStatus'];
   consent?: Student['consent'];
+  whatsappNumber?: string;
+  notificationPreferences?: Student['notificationPreferences'];
 }
 
 export const studentService = {

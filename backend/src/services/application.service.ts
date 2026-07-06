@@ -236,6 +236,8 @@ export async function updateApplicationStatus(
       body: `Your application for "${internship?.title ?? 'an internship'}" is now ${input.status}`,
       data: { applicationId: application._id, status: input.status },
       email: input.status === ApplicationStatus.HIRED || input.status === ApplicationStatus.SHORTLISTED,
+      whatsapp: true,
+      whatsappPreference: 'applicationUpdates',
     });
   }
 

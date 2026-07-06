@@ -60,6 +60,11 @@ export interface IStudent extends Document {
   profileCompleteness: number;
   jobSeekingStatus: 'active' | 'passive' | 'closed';
   consent: { candidateDiscovery: boolean; dataProcessing: boolean };
+  whatsappNumber?: string;
+  notificationPreferences: {
+    email: { applicationUpdates: boolean; newMatches: boolean };
+    whatsapp: { enabled: boolean; applicationUpdates: boolean; newMatches: boolean };
+  };
   // V2: public portfolio (optional, backward-compatible)
   slug?: string;
   publicProfile: boolean;
@@ -169,6 +174,18 @@ const studentSchema = new Schema<IStudent>(
     consent: {
       candidateDiscovery: { type: Boolean, default: true },
       dataProcessing: { type: Boolean, default: true },
+    },
+    whatsappNumber: { type: String, trim: true, maxlength: 20 },
+    notificationPreferences: {
+      email: {
+        applicationUpdates: { type: Boolean, default: true },
+        newMatches: { type: Boolean, default: true },
+      },
+      whatsapp: {
+        enabled: { type: Boolean, default: false },
+        applicationUpdates: { type: Boolean, default: true },
+        newMatches: { type: Boolean, default: false },
+      },
     },
     slug: { type: String, unique: true, sparse: true },
     publicProfile: { type: Boolean, default: false },

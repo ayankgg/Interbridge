@@ -49,6 +49,7 @@
     "nodemailer": "^6.9.16",
     "pdf-parse": "^2.4.5",
     "socket.io": "^4.8.3",
+    "twilio": "^6.0.2",
     "winston": "^3.17.0",
     "zod": "^3.24.1"
   },

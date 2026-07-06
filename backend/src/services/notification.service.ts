@@ -1,10 +1,12 @@
 import { Types } from 'mongoose';
 import { Notification } from '../models/Notification';
 import { User } from '../models/User';
+import { Student } from '../models/Student';
 import { NotificationType } from '../types';
 import { getPagination, buildMeta } from '../utils/pagination';
 import { AppError } from '../utils/AppError';
 import { sendEmail } from './email.service';
+import { sendWhatsAppMessage } from './whatsapp.service';
 import { notificationRepository } from '../repositories/notification.repository';
 import { escapeHtml } from '../utils/sanitize';
 import { logger } from '../config/logger';
@@ -17,6 +19,9 @@ interface CreateNotificationInput {
   data?: Record<string, unknown>;
   channels?: string[];
   email?: boolean;
+  // Attempt a WhatsApp send if the student has opted in for this preference.
+  whatsapp?: boolean;
+  whatsappPreference?: 'applicationUpdates' | 'newMatches';
 }
 
 /**
@@ -44,6 +49,20 @@ export async function createNotification(input: CreateNotificationInput): Promis
           html: `<h3>${escapeHtml(input.title)}</h3><p>${escapeHtml(input.body)}</p>`,
         });
         notification.emailSent = true;
+        await notification.save();
+      }
+    }
+
+    if (input.whatsapp) {
+      const prefKey = input.whatsappPreference ?? 'applicationUpdates';
+      const student = await Student.findOne({ userId: input.userId }).select(
+        'whatsappNumber notificationPreferences'
+      );
+      const prefs = student?.notificationPreferences?.whatsapp;
+      if (student?.whatsappNumber && prefs?.enabled && prefs[prefKey]) {
+        await sendWhatsAppMessage(student.whatsappNumber, `${input.title}: ${input.body}`);
+        notification.channels.push('whatsapp');
+        notification.whatsappSent = true;
         await notification.save();
       }
     }

@@ -15,13 +15,21 @@ export function normalizeError(error: unknown): NormalizedError {
   if (axiosErr?.isAxiosError) {
     const body = axiosErr.response?.data;
     if (body && typeof body === 'object' && 'error' in body && body.error) {
+      const details = Array.isArray(body.error.details)
+        ? (body.error.details as Array<{ path?: string; message: string }>)
+        : undefined;
+      // Field-validation errors (Zod) carry the generic "Invalid request
+      // data" as the top-level message — the actionable reason lives in
+      // `details`. Surface that instead so the user knows what to fix.
+      const message =
+        details && details.length > 0
+          ? details.map((d) => d.message).join(', ')
+          : body.error.message || 'Something went wrong';
       return {
         code: body.error.code || 'INTERNAL',
-        message: body.error.message || 'Something went wrong',
+        message,
         status: axiosErr.response?.status,
-        details: Array.isArray(body.error.details)
-          ? (body.error.details as Array<{ path?: string; message: string }>)
-          : undefined,
+        details,
       };
     }
     if (axiosErr.code === 'ERR_NETWORK') {

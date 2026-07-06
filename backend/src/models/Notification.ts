@@ -11,6 +11,7 @@ export interface INotification extends Document {
   channels: string[];
   read: boolean;
   emailSent: boolean;
+  whatsappSent: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -34,6 +35,7 @@ const notificationSchema = new Schema<INotification>(
     channels: { type: [String], default: ['in_app'] },
     read: { type: Boolean, default: false },
     emailSent: { type: Boolean, default: false },
+    whatsappSent: { type: Boolean, default: false },
   },
   {
     timestamps: true,

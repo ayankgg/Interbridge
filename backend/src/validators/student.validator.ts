@@ -30,6 +30,35 @@ export const updateStudentSchema = z.object({
     })
     .optional(),
   jobSeekingStatus: z.enum(['active', 'passive', 'closed']).optional(),
+  consent: z
+    .object({
+      candidateDiscovery: z.boolean().optional(),
+      dataProcessing: z.boolean().optional(),
+    })
+    .optional(),
+  whatsappNumber: z
+    .string()
+    .trim()
+    .regex(/^[+()\-\s\d]{7,20}$/, 'Invalid phone number')
+    .optional()
+    .or(z.literal('')),
+  notificationPreferences: z
+    .object({
+      email: z
+        .object({
+          applicationUpdates: z.boolean().optional(),
+          newMatches: z.boolean().optional(),
+        })
+        .optional(),
+      whatsapp: z
+        .object({
+          enabled: z.boolean().optional(),
+          applicationUpdates: z.boolean().optional(),
+          newMatches: z.boolean().optional(),
+        })
+        .optional(),
+    })
+    .optional(),
   skills: z
     .array(
       z.object({

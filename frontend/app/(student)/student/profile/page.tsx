@@ -355,7 +355,7 @@ function SecurityCard({ email }: { email?: string }) {
   };
 
   return (
-    <Card>
+    <Card id="security" className="scroll-mt-6">
       <CardContent className="p-6">
         <div className="flex items-center gap-2">
           <Lock className="h-5 w-5 text-primary" />

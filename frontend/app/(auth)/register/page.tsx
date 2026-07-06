@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, EyeOff, GraduationCap, Building2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Card, CardContent } from '@/components/ui/card';
 import { Field } from '@/components/ui/form-field';
 import { Spinner } from '@/components/ui/loader';
 import { cn } from '@/lib/utils';
@@ -44,34 +45,37 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="space-y-2 text-center lg:text-left">
-        <h1 className="text-2xl font-bold tracking-tight">Create your account</h1>
-        <p className="text-sm text-muted-foreground">
-          Join InternBridge in less than a minute.
-        </p>
-      </div>
+    <Card className="border shadow-lg">
+      <CardContent className="space-y-4 p-5 sm:p-6">
+        <div className="space-y-1 text-center lg:text-left">
+          <h1 className="text-xl font-bold tracking-tight">Create your account</h1>
+          <p className="text-sm text-muted-foreground">
+            Join InternBridge in less than a minute.
+          </p>
+        </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
         {/* Role selector */}
         <Field label="I am a…" error={errors.role?.message}>
           <div className="grid grid-cols-2 gap-3">
-            {[
-              { value: UserRole.STUDENT, label: 'Student', icon: GraduationCap },
-              { value: UserRole.COMPANY, label: 'Company', icon: Building2 },
-            ].map((opt) => (
+            {(
+              [
+                { value: UserRole.STUDENT, label: 'Student', icon: GraduationCap },
+                { value: UserRole.COMPANY, label: 'Company', icon: Building2 },
+              ] as const
+            ).map((opt) => (
               <button
                 key={opt.value}
                 type="button"
                 onClick={() => setValue('role', opt.value, { shouldValidate: true })}
                 className={cn(
-                  'flex flex-col items-center gap-2 rounded-lg border-2 p-4 text-sm font-medium transition-colors',
+                  'flex flex-col items-center gap-1.5 rounded-lg border-2 p-3 text-sm font-medium transition-colors',
                   role === opt.value
                     ? 'border-primary bg-primary/5 text-primary'
                     : 'border-input hover:border-primary/40'
                 )}
               >
-                <opt.icon className="h-6 w-6" />
+                <opt.icon className="h-5 w-5" />
                 {opt.label}
               </button>
             ))}
@@ -141,12 +145,13 @@ export default function RegisterPage() {
         </Button>
       </form>
 
-      <p className="text-center text-sm text-muted-foreground">
-        Already have an account?{' '}
-        <Link href="/login" className="font-medium text-primary hover:underline">
-          Sign in
-        </Link>
-      </p>
-    </div>
+        <p className="text-center text-sm text-muted-foreground">
+          Already have an account?{' '}
+          <Link href="/login" className="font-medium text-primary hover:underline">
+            Sign in
+          </Link>
+        </p>
+      </CardContent>
+    </Card>
   );
 }
