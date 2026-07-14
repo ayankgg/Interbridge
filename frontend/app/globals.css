@@ -122,10 +122,3 @@
 .anim-float-b { animation: float-b 12s ease-in-out infinite; }
 .anim-float-card { animation: float-card 5s ease-in-out infinite; }
 .anim-ring { animation: ring-pulse 2.4s ease-out infinite; }
-
-/* ===== Landing entrance animation ===== */
-@keyframes fade-up {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: none; }
-}
-.animate-fade-up { animation: fade-up 0.7s ease-out both; }

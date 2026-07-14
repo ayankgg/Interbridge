@@ -1,26 +1,9 @@
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { formatDistanceToNow, format, isValid } from 'date-fns';
-import { ROLE_HOME } from '@/constants';
-import { UserRole } from '@/types';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
-}
-
-/**
- * Navigate to a role's home. Admins land on the separate AdminJS panel (an
- * absolute URL on the backend's origin), which the Next.js client router
- * can't target — that needs a real browser navigation. Student/company go
- * through the app router as usual.
- */
-export function goToRoleHome(role: UserRole, router: { replace: (href: string) => void }) {
-  const href = ROLE_HOME[role];
-  if (role === UserRole.ADMIN) {
-    window.location.href = href;
-  } else {
-    router.replace(href);
-  }
 }
 
 export function formatDate(date?: string | Date | null, pattern = 'dd MMM yyyy'): string {

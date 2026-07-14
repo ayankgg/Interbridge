@@ -8,7 +8,6 @@ import { Loader } from '@/components/ui/loader';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { DataSecurityCard } from '@/components/shared/data-security-card';
 import { useStudentProfile, useUpdateStudentProfile } from '@/hooks/use-student';
 import { useAuthStore } from '@/store/auth.store';
 import type { Student } from '@/types';
@@ -248,9 +247,6 @@ export default function SettingsPage() {
           </div>
         </CardContent>
       </Card>
-
-      {/* Data security */}
-      <DataSecurityCard />
     </div>
   );
 }

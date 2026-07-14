@@ -21,9 +21,7 @@ export async function getMyCompany(userId: string) {
 export async function getCompanyById(id: string) {
   if (!Types.ObjectId.isValid(id)) throw AppError.badRequest('Invalid company id');
   const company = await Company.findById(id)
-    .select(
-      'name logoUrl description website industry size founder foundedYear headquarters email socials leadership location verification.status slug'
-    )
+    .select('name logoUrl description website industry size location verification.status slug')
     .lean();
   if (!company) throw AppError.notFound('Company not found');
 
@@ -35,12 +33,6 @@ export async function getCompanyById(id: string) {
     website: company.website,
     industry: company.industry,
     size: company.size,
-    founder: company.founder,
-    foundedYear: company.foundedYear,
-    headquarters: company.headquarters,
-    email: company.email,
-    socials: company.socials,
-    leadership: company.leadership,
     location: company.location,
     verified: company.verification?.status === VerificationStatus.VERIFIED,
     slug: company.slug,
@@ -123,12 +115,6 @@ export async function getCompanyAnalytics(userId: string) {
     totalApplications: 0,
   };
 
-  // Total applications derived from real application docs (excluding withdrawn)
-  // so it matches the applicants board — the `stats.applications` counter drifts
-  // because it is incremented on apply but never decremented on withdraw.
-  const totalApplications =
-    funnel.pending + funnel.shortlisted + funnel.rejected + funnel.hired;
-
   const avgMatch = await Application.aggregate([
     { $match: { companyId: company._id } },
     { $group: { _id: null, avg: { $avg: '$matchScore' } } },
@@ -140,7 +126,7 @@ export async function getCompanyAnalytics(userId: string) {
       total: totals.totalInternships,
       active: totals.active,
       totalViews: totals.totalViews,
-      totalApplications,
+      totalApplications: totals.totalApplications,
     },
     applicationFunnel: funnel,
     averageMatchScore: Math.round(avgMatch[0]?.avg ?? 0),
@@ -165,11 +151,8 @@ export async function getAllApplicants(userId: string, query: Record<string, unk
 
   const applications = await Application.find(filter)
     .sort({ matchScore: -1, createdAt: -1 })
-    .populate(
-      'studentId',
-      'name headline avatarUrl skills yearOfStudy college location links projects resume bio'
-    )
-    .populate('internshipId', 'title role location')
+    .populate('studentId', 'name headline skills yearOfStudy location')
+    .populate('internshipId', 'title')
     .limit(500)
     .lean();
 

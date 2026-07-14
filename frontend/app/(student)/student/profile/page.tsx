@@ -18,7 +18,6 @@ import {
   Camera,
   Loader2,
 } from 'lucide-react';
-import { PageHeader } from '@/components/shared/page-header';
 import { Loader } from '@/components/ui/loader';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -128,10 +127,12 @@ export default function ProfilePage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader
-        title="Profile"
-        description="Your details power matching, recommendations and applications."
-      />
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight">Profile</h1>
+        <p className="text-sm text-muted-foreground">
+          Your details power matching, recommendations and applications.
+        </p>
+      </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1.4fr_1fr]">
         {/* ---------- Personal information ---------- */}

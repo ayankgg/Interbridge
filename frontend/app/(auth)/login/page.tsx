@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Eye, EyeOff, GraduationCap, Building2, ShieldCheck } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
@@ -20,7 +20,6 @@ export default function LoginPage() {
   const {
     register,
     handleSubmit,
-    setValue,
     formState: { errors },
   } = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
@@ -28,13 +27,6 @@ export default function LoginPage() {
   });
 
   const onSubmit = (values: LoginValues) => login.mutate(values);
-
-  const DEMO_PASSWORD = 'Password123';
-  const quickLogin = (email: string) => {
-    setValue('email', email);
-    setValue('password', DEMO_PASSWORD);
-    login.mutate({ email, password: DEMO_PASSWORD });
-  };
 
   return (
     <Card className="border shadow-lg">
@@ -104,20 +96,9 @@ export default function LoginPage() {
           </Link>
         </p>
 
-        <div className="space-y-2 rounded-lg border bg-muted/40 p-3">
-          <p className="text-xs font-medium text-muted-foreground">Quick sign in as a demo account</p>
-          <div className="grid grid-cols-3 gap-2">
-            <Button type="button" variant="outline" size="sm" className="flex-col h-auto py-2 text-xs" disabled={login.isPending} onClick={() => quickLogin('student@example.com')}>
-              <GraduationCap className="mb-1 h-4 w-4" /> Student
-            </Button>
-            <Button type="button" variant="outline" size="sm" className="flex-col h-auto py-2 text-xs" disabled={login.isPending} onClick={() => quickLogin('company@example.com')}>
-              <Building2 className="mb-1 h-4 w-4" /> Company
-            </Button>
-            <Button type="button" variant="outline" size="sm" className="flex-col h-auto py-2 text-xs" disabled={login.isPending} onClick={() => quickLogin('admin@internbridge.com')}>
-              <ShieldCheck className="mb-1 h-4 w-4" /> Admin
-            </Button>
-          </div>
-          <p className="text-[11px] text-muted-foreground">All demo accounts use password <span className="font-medium">Password123</span>.</p>
+        <div className="rounded-lg border bg-muted/40 p-3 text-xs text-muted-foreground">
+          <p className="font-medium">Demo accounts (password: Password123)</p>
+          <p>student@example.com · company@example.com · admin@internbridge.com</p>
         </div>
       </CardContent>
     </Card>

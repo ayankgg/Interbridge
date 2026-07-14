@@ -100,9 +100,6 @@ export const env = {
   // this to 'true' on exactly ONE instance (or a dedicated worker) to avoid
   // duplicate notifications / double execution.
   enableScheduledJobs: optional('ENABLE_SCHEDULED_JOBS', 'true') === 'true',
-
-  // AdminJS panel session cookie secret.
-  adminCookieSecret: secret('ADMIN_COOKIE_SECRET', 'dev_admin_cookie_secret_change_me'),
 };
 
 export default env;

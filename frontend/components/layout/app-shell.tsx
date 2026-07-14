@@ -1,7 +1,6 @@
 'use client';
 
 import { RoleGuard } from '@/components/auth/role-guard';
-import { ProductTour } from '@/components/onboarding/product-tour';
 import { Sidebar } from './sidebar';
 import { Navbar } from './navbar';
 import { navForRole } from './nav-config';
@@ -22,7 +21,6 @@ export function AppShell({
 
   return (
     <RoleGuard allow={[role]}>
-      <ProductTour />
       <div className="flex min-h-screen bg-muted/30">
         <Sidebar items={items} homeHref={homeHref} />
         <div className="flex min-w-0 flex-1 flex-col">

@@ -202,12 +202,6 @@ export interface Company {
   website?: string;
   industry?: string;
   size?: string;
-  founder?: string;
-  foundedYear?: number;
-  headquarters?: string;
-  email?: string;
-  socials?: { linkedin?: string; twitter?: string };
-  leadership?: { name: string; title?: string }[];
   location: { city?: string; country?: string };
   verification: {
     status: VerificationStatus;

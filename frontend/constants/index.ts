@@ -13,24 +13,14 @@ export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || 'InternBridge';
 export const API_URL =
   process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
 
-// Admins don't get a page in this app — they manage the platform through the
-// separate AdminJS panel the backend mounts at /admin (its own session-based
-// login, unrelated to the JWT auth used here). Derived from API_URL by
-// stripping the `/api/v1`-style prefix back to the backend's origin.
-export const ADMIN_PANEL_URL = `${API_URL.replace(/\/api\/.*$/, '')}/admin`;
-
 export const ACCESS_TOKEN_KEY = 'ib_access_token';
 export const AUTH_STORAGE_KEY = 'ib-auth';
 
 // ---------- Role landing routes ----------
-// STUDENT/COMPANY are internal app routes (safe for the Next.js router).
-// ADMIN is an absolute URL to the separate AdminJS panel — never pass it to
-// `router.replace`/`router.push`, only to a plain `<a>`/`<Link>` or
-// `window.location`. Use `goToRoleHome` below to route correctly either way.
 export const ROLE_HOME: Record<UserRole, string> = {
   [UserRole.STUDENT]: '/student/dashboard',
   [UserRole.COMPANY]: '/company/dashboard',
-  [UserRole.ADMIN]: ADMIN_PANEL_URL,
+  [UserRole.ADMIN]: '/admin/dashboard',
 };
 
 // ---------- Badges / colors ----------

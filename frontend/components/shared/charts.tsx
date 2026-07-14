@@ -15,7 +15,6 @@ import {
   YAxis,
   Legend,
 } from 'recharts';
-import { cn } from '@/lib/utils';
 
 const COLORS = ['#6366f1', '#22c55e', '#f59e0b', '#ef4444', '#06b6d4', '#a855f7'];
 
@@ -80,57 +79,6 @@ export function SimpleLineChart({
         <Line type="monotone" dataKey="value" stroke={color} strokeWidth={2} dot={false} />
       </LineChart>
     </ResponsiveContainer>
-  );
-}
-
-const FUNNEL_COMPLETE = '#6366f1'; // blue — stage reached
-const FUNNEL_PENDING = '#f59e0b'; // yellow — no one here yet
-
-/**
- * Hiring-pipeline funnel — stages taper top→bottom and are colored by progress:
- * blue when the stage has been reached (count > 0), yellow when it hasn't yet.
- * Feed it stages in pipeline order (e.g. Pending → Shortlisted → Hired → Rejected).
- */
-export function PipelineFunnel({
-  data,
-  height,
-}: {
-  data: SeriesPoint[];
-  height?: number;
-}) {
-  // Progressive taper gives the funnel shape regardless of the counts.
-  const widths = ['100%', '84%', '68%', '54%', '42%', '32%'];
-
-  return (
-    <div className="flex flex-col" style={height ? { minHeight: height } : undefined}>
-      <div className="flex flex-1 flex-col items-center gap-1.5 py-2">
-        {data.map((d, i) => {
-          const complete = d.value > 0;
-          return (
-            <div
-              key={d.name}
-              className="flex items-center justify-center rounded-md py-2.5 text-sm font-semibold text-white shadow-sm transition-colors"
-              style={{ width: widths[i] ?? '28%', backgroundColor: complete ? FUNNEL_COMPLETE : FUNNEL_PENDING }}
-              title={`${d.name}: ${d.value} ${complete ? '(complete)' : '(not complete)'}`}
-            >
-              <span className="mr-2 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-white/25 px-1.5 text-xs">
-                {d.value}
-              </span>
-              {d.name}
-            </div>
-          );
-        })}
-      </div>
-      {/* Legend */}
-      <div className="mt-1 flex items-center justify-center gap-4 border-t pt-3 text-xs text-muted-foreground">
-        <span className="flex items-center gap-1.5">
-          <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: FUNNEL_COMPLETE }} /> Complete
-        </span>
-        <span className="flex items-center gap-1.5">
-          <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: FUNNEL_PENDING }} /> Not complete
-        </span>
-      </div>
-    </div>
   );
 }
 

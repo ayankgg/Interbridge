@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import { Upload, File as FileIcon, X, ExternalLink } from 'lucide-react';
+import { Upload, File as FileIcon, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/loader';
 import { cn } from '@/lib/utils';
@@ -39,15 +39,6 @@ export function FileUpload({
     setError(null);
     setSelected(file);
     onUpload(file);
-  };
-
-  // Open the just-selected file in a new tab (PDFs render inline; other types
-  // download). Uses a local blob URL so it works without any server storage.
-  const openSelected = () => {
-    if (!selected) return;
-    const url = URL.createObjectURL(selected);
-    window.open(url, '_blank', 'noopener,noreferrer');
-    setTimeout(() => URL.revokeObjectURL(url), 60_000);
   };
 
   return (
@@ -99,27 +90,14 @@ export function FileUpload({
             <FileIcon className="h-4 w-4 shrink-0" />
             <span className="truncate">{selected.name}</span>
           </span>
-          <span className="flex shrink-0 items-center gap-1">
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              className="h-7 gap-1 px-2 text-xs"
-              onClick={openSelected}
-            >
-              <ExternalLink className="h-3.5 w-3.5" /> Open
-            </Button>
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              className="h-6 w-6"
-              onClick={() => setSelected(null)}
-              aria-label="Remove file"
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          </span>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-6 w-6"
+            onClick={() => setSelected(null)}
+          >
+            <X className="h-4 w-4" />
+          </Button>
         </div>
       )}
 

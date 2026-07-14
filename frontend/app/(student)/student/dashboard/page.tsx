@@ -17,7 +17,7 @@ import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { Loader } from '@/components/ui/loader';
 import { EmptyState } from '@/components/shared/empty-state';
-import { PipelineFunnel } from '@/components/shared/charts';
+import { SimpleDonutChart } from '@/components/shared/charts';
 import { MatchScoreBadge } from '@/components/shared/status-badge';
 import { useStudentDashboard } from '@/hooks/use-student';
 import { useRecommendations } from '@/hooks/use-ai';
@@ -108,7 +108,7 @@ export default function StudentDashboardPage() {
                 icon={Briefcase}
               />
             ) : (
-              <PipelineFunnel data={funnelData} height={240} />
+              <SimpleDonutChart data={funnelData} height={240} />
             )}
           </CardContent>
         </Card>
