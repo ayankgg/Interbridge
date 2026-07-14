@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 import { authService } from '@/services';
 import { useAuthStore } from '@/store/auth.store';
 import { useUserStore } from '@/store/user.store';
-import { ROLE_HOME } from '@/constants';
+import { goToRoleHome } from '@/lib/utils';
 import type { LoginPayload, RegisterPayload } from '@/types';
 
 export function useLogin() {
@@ -18,7 +18,7 @@ export function useLogin() {
     onSuccess: ({ user, accessToken }) => {
       setAuth(user, accessToken);
       toast.success(`Welcome back, ${user.email.split('@')[0]}!`);
-      router.replace(ROLE_HOME[user.role] ?? '/');
+      goToRoleHome(user.role, router);
     },
   });
 }
@@ -32,7 +32,7 @@ export function useRegister() {
     onSuccess: ({ user, accessToken }) => {
       setAuth(user, accessToken);
       toast.success('Account created — welcome to InternBridge!');
-      router.replace(ROLE_HOME[user.role] ?? '/');
+      goToRoleHome(user.role, router);
     },
   });
 }
