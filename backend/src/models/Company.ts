@@ -16,6 +16,12 @@ export interface ICompany extends Document {
   website?: string;
   industry?: string;
   size?: string;
+  founder?: string;
+  foundedYear?: number;
+  headquarters?: string;
+  email?: string;
+  socials?: { linkedin?: string; twitter?: string };
+  leadership?: { name: string; title?: string }[];
   location: { city?: string; country?: string };
   verification: {
     status: VerificationStatus;
@@ -47,6 +53,21 @@ const companySchema = new Schema<ICompany>(
     website: { type: String, trim: true },
     industry: { type: String, trim: true },
     size: { type: String, trim: true },
+    founder: { type: String, trim: true, maxlength: 160 },
+    foundedYear: { type: Number, min: 1800, max: 2100 },
+    headquarters: { type: String, trim: true, maxlength: 200 },
+    email: { type: String, trim: true, lowercase: true, maxlength: 160 },
+    socials: {
+      linkedin: { type: String, trim: true },
+      twitter: { type: String, trim: true },
+    },
+    leadership: [
+      {
+        _id: false,
+        name: { type: String, required: true, trim: true, maxlength: 120 },
+        title: { type: String, trim: true, maxlength: 120 },
+      },
+    ],
     location: {
       city: { type: String, trim: true },
       country: { type: String, trim: true },

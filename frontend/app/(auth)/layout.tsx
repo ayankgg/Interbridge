@@ -1,13 +1,15 @@
 'use client';
 
 import { useEffect } from 'react';
+import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import { Brand } from '@/components/layout/brand';
 import { ThemeToggle } from '@/components/shared/theme-toggle';
 import { AuthAnimation } from '@/components/shared/auth-animation';
+import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/store/auth.store';
-import { ROLE_HOME } from '@/constants';
-import { Sparkles, Target, ShieldCheck } from 'lucide-react';
+import { goToRoleHome } from '@/lib/utils';
+import { Sparkles, Target, ShieldCheck, Home } from 'lucide-react';
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -18,7 +20,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
 
   // Already signed in? Bounce to the role home.
   useEffect(() => {
-    if (user) router.replace(ROLE_HOME[user.role]);
+    if (user) goToRoleHome(user.role, router);
   }, [user, router]);
 
   if (centered) {
@@ -28,7 +30,12 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         <div className="absolute left-6 top-6 z-10">
           <Brand href="/" />
         </div>
-        <div className="absolute right-6 top-6 z-10">
+        <div className="absolute right-6 top-6 z-10 flex items-center gap-2">
+          <Button variant="outline" size="sm" asChild>
+            <Link href="/">
+              <Home className="mr-1.5 h-4 w-4" /> Home
+            </Link>
+          </Button>
           <ThemeToggle />
         </div>
         <div className="relative z-10 w-full max-w-md py-10">{children}</div>

@@ -11,6 +11,10 @@ build/
 **/.next/
 out/
 
+# AdminJS regenerates this bundle on startup
+.adminjs/
+**/.adminjs/
+
 # ===== Secrets / environment =====
 .env
 .env.*

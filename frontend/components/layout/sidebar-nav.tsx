@@ -17,7 +17,7 @@ export function SidebarNav({
   const allHrefs = useMemo(() => items.map((i) => i.href), [items]);
 
   return (
-    <nav className="flex flex-col gap-1 px-3 py-4">
+    <nav className="flex flex-col gap-0.5 px-3 py-4">
       {items.map((item) => {
         const active = isActivePath(pathname, item.href, allHrefs);
         const Icon = item.icon;
@@ -25,9 +25,10 @@ export function SidebarNav({
           <Link
             key={item.href}
             href={item.href}
+            data-tour={`nav-${item.href}`}
             onClick={onNavigate}
             className={cn(
-              'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+              'flex items-center gap-3 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors',
               active
                 ? 'bg-primary text-primary-foreground'
                 : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'

@@ -8,10 +8,11 @@ import hpp from 'hpp';
 import morgan from 'morgan';
 
 import { env } from './config/env';
-import { stream } from './config/logger';
+import { stream, logger } from './config/logger';
 import { metricsMiddleware } from './config/metrics';
 import routes from './routes';
 import healthRoutes from './routes/health.routes';
+import { buildAdminRouter } from './admin/setup';
 import { notFoundHandler, errorHandler } from './middleware/errorHandler';
 import { globalLimiter } from './middleware/rateLimiter';
 
@@ -20,6 +21,22 @@ const app: Application = express();
 // Required so secure cookies / rate-limit IPs work behind a reverse proxy.
 app.set('trust proxy', 1);
 app.disable('x-powered-by');
+
+// AdminJS panel — mounted at its rootPath BEFORE helmet so its
+// content-security-policy doesn't block the admin UI assets. Mounting at
+// admin.options.rootPath scopes the router (and its session + auth guard) to
+// /admin only, so the JSON API and health routes are untouched. AdminJS builds
+// routes relative to rootPath, so it MUST be mounted this way.
+// Optional: a failure here never blocks the API. Skipped under test (its dev
+// bundler leaves open handles that would hang the jest run).
+if (env.nodeEnv !== 'test') {
+  try {
+    const { admin, router: adminRouter } = buildAdminRouter();
+    app.use(admin.options.rootPath, adminRouter);
+  } catch (err) {
+    logger.error('Failed to mount AdminJS panel', err);
+  }
+}
 
 // Security headers (incl. HSTS in production)
 app.use(

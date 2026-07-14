@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/auth.store';
-import { ROLE_HOME } from '@/constants';
+import { goToRoleHome } from '@/lib/utils';
 import { Loader } from '@/components/ui/loader';
 import type { UserRole } from '@/types';
 
@@ -25,7 +25,7 @@ export function RoleGuard({ allow, children }: RoleGuardProps) {
       return;
     }
     if (!allow.includes(user.role)) {
-      router.replace(ROLE_HOME[user.role] ?? '/login');
+      goToRoleHome(user.role, router);
     }
   }, [isAuthenticated, user, allow, router]);
 

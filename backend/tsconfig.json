@@ -3,6 +3,7 @@
     "target": "ES2021",
     "module": "commonjs",
     "lib": ["ES2021"],
+    "jsx": "react",
     "rootDir": "./src",
     "outDir": "./dist",
     "moduleResolution": "node",
@@ -23,7 +24,7 @@
     "removeComments": true,
     "typeRoots": ["./node_modules/@types", "./src/types"]
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
   "exclude": ["node_modules", "dist"],
   "ts-node": {
     "files": true
