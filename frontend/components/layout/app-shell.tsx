@@ -27,7 +27,7 @@ export function AppShell({
         <Sidebar items={items} homeHref={homeHref} />
         <div className="flex min-w-0 flex-1 flex-col">
           <Navbar items={items} homeHref={homeHref} />
-          <main className="mx-auto w-full max-w-7xl flex-1 animate-fade-in space-y-6 p-4 sm:p-6 lg:p-8">
+          <main className="w-full flex-1 animate-fade-in space-y-6 p-4 sm:p-6 lg:p-8">
             {children}
           </main>
         </div>

@@ -44,6 +44,24 @@ export function useUploadResumeAnalysis() {
   });
 }
 
+export function useAnalyzeResumeText() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ text, name }: { text: string; name?: string }) =>
+      resumeService.analyzeText(text, name),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['resume'] });
+      qc.invalidateQueries({ queryKey: ['student'] });
+    },
+    onError: (err: unknown) => {
+      const msg =
+        (err as { response?: { data?: { error?: { message?: string } } } })?.response?.data?.error
+          ?.message ?? 'Analysis failed';
+      toast.error(msg);
+    },
+  });
+}
+
 export function useRewriteResume() {
   const qc = useQueryClient();
   return useMutation({

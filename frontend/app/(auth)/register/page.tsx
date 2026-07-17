@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, EyeOff, GraduationCap, Building2 } from 'lucide-react';
@@ -15,7 +16,8 @@ import { useRegister } from '@/hooks/use-auth';
 import { registerSchema, type RegisterValues } from '@/lib/validations';
 import { UserRole } from '@/types';
 
-export default function RegisterPage() {
+function RegisterForm() {
+  const searchParams = useSearchParams();
   const registerMutation = useRegister();
   const [show, setShow] = useState(false);
 
@@ -37,6 +39,14 @@ export default function RegisterPage() {
   });
 
   const role = watch('role');
+
+  // Lets links like `/register?role=company` land with the Company option
+  // pre-selected, e.g. the "post an internship" CTA aimed at employers.
+  useEffect(() => {
+    if (searchParams.get('role') === UserRole.COMPANY) {
+      setValue('role', UserRole.COMPANY);
+    }
+  }, [searchParams, setValue]);
 
   const onSubmit = (values: RegisterValues) => {
     const { confirmPassword, ...payload } = values;
@@ -153,5 +163,13 @@ export default function RegisterPage() {
         </p>
       </CardContent>
     </Card>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={<Spinner className="mx-auto h-6 w-6" />}>
+      <RegisterForm />
+    </Suspense>
   );
 }

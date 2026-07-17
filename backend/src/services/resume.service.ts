@@ -4,7 +4,7 @@ import { Student } from '../models/Student';
 import { Internship } from '../models/Internship';
 import { AppError } from '../utils/AppError';
 import { uploadBuffer, deleteAsset } from '../utils/cloudinaryUpload';
-import { parseResume } from '../utils/resumeParser';
+import { parseResume, extractUrls } from '../utils/resumeParser';
 import { analyzeResumeRuleBased, type ResumeReport, type Suggestion } from '../utils/resumeScoring';
 import { runGeminiJson, isGeminiEnabled } from '../utils/geminiJson';
 import { InternshipStatus } from '../types';
@@ -86,7 +86,62 @@ export async function uploadAndAnalyze(userId: string, file: UploadFile): Promis
     }
   }
 
-  // 3. Analyze (rule-based, then optional AI enrichment)
+  return analyzeAndPersist(student, userId, parsed, {
+    fileUrl: uploaded.secure_url,
+    publicId: uploaded.public_id,
+    originalName: file.originalname,
+    mimeType: file.mimetype,
+    sizeBytes: file.size,
+  });
+}
+
+/**
+ * Analyze a resume from raw text (e.g. the in-app resume builder) — no file
+ * parsing, so it never hits the "could not extract text" path that browser-
+ * generated PDFs can trip. Still enforces the same minimum-content check.
+ */
+export async function analyzeFromText(
+  userId: string,
+  input: { text: string; name?: string }
+): Promise<IResumeVersion> {
+  const student = await getStudent(userId);
+  const text = input.text.trim();
+  const wordCount = text.split(/\s+/).filter(Boolean).length;
+
+  if (wordCount < 30) {
+    throw AppError.unprocessable(
+      'Your resume is too short to analyze — add more detail (summary, education, skills, projects) and try again.'
+    );
+  }
+
+  const parsed = {
+    text,
+    wordCount,
+    pageCount: 1,
+    hyperlinks: extractUrls(text),
+  };
+
+  return analyzeAndPersist(student, userId, parsed, {
+    originalName: `${(input.name || 'resume').replace(/[^\w.-]+/g, '_')}-built.txt`,
+    mimeType: 'text/plain',
+    sizeBytes: Buffer.byteLength(text, 'utf8'),
+  });
+}
+
+/** Shared: run the scoring pipeline on already-parsed text and persist a version. */
+async function analyzeAndPersist(
+  student: Awaited<ReturnType<typeof getStudent>>,
+  userId: string,
+  parsed: { text: string; wordCount: number; pageCount?: number; hyperlinks: string[] },
+  file: {
+    fileUrl?: string;
+    publicId?: string;
+    originalName: string;
+    mimeType: string;
+    sizeBytes: number;
+  }
+): Promise<IResumeVersion> {
+  // Analyze (rule-based, then optional AI enrichment)
   const demanded = await getDemandedSkills();
   let report = analyzeResumeRuleBased({
     text: parsed.text,
@@ -97,7 +152,6 @@ export async function uploadAndAnalyze(userId: string, file: UploadFile): Promis
   });
   report = await enrichWithGemini(report, parsed.text);
 
-  // 4. Version + persist
   const last = await ResumeVersion.findOne({ studentId: student._id }).sort({ version: -1 }).select('version');
   const version = (last?.version ?? 0) + 1;
 
@@ -106,11 +160,11 @@ export async function uploadAndAnalyze(userId: string, file: UploadFile): Promis
     userId: new Types.ObjectId(userId),
     version,
     file: {
-      fileUrl: uploaded.secure_url,
-      publicId: uploaded.public_id,
-      originalName: file.originalname,
-      mimeType: file.mimetype,
-      sizeBytes: file.size,
+      fileUrl: file.fileUrl,
+      publicId: file.publicId,
+      originalName: file.originalName,
+      mimeType: file.mimeType,
+      sizeBytes: file.sizeBytes,
     },
     extractedText: parsed.text,
     wordCount: parsed.wordCount,
@@ -121,11 +175,11 @@ export async function uploadAndAnalyze(userId: string, file: UploadFile): Promis
     analyzedAt: new Date(),
   });
 
-  // 5. Keep the Student profile's current resume pointer in sync (preserve an
-  //    existing URL if storage was skipped this time).
+  // Keep the Student profile's current resume pointer in sync (preserve an
+  // existing URL if storage was skipped this time).
   student.resume = {
-    fileUrl: uploaded.secure_url ?? student.resume?.fileUrl,
-    publicId: uploaded.public_id ?? student.resume?.publicId,
+    fileUrl: file.fileUrl ?? student.resume?.fileUrl,
+    publicId: file.publicId ?? student.resume?.publicId,
     parseStatus: 'done',
     version,
     uploadedAt: new Date(),

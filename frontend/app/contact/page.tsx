@@ -6,11 +6,8 @@ import { toast } from 'sonner';
 import { Mail, Phone, MapPin, Clock, Send, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Brand } from '@/components/layout/brand';
-import { ThemeToggle } from '@/components/shared/theme-toggle';
+import { PublicHeader } from '@/components/layout/public-header';
 import { Footer } from '@/components/layout/footer';
-import { useAuthStore } from '@/store/auth.store';
-import { ROLE_HOME } from '@/constants';
 
 const INFO = [
   {
@@ -29,7 +26,6 @@ const inputCls =
   'flex h-11 w-full rounded-lg border border-input bg-background px-3.5 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50';
 
 export default function ContactPage() {
-  const user = useAuthStore((s) => s.user);
   const [form, setForm] = useState({ name: '', phone: '', email: '', who: '', message: '' });
   const [sending, setSending] = useState(false);
 
@@ -53,31 +49,7 @@ export default function ContactPage() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      {/* Header */}
-      <header className="sticky top-0 z-30 border-b bg-background/90 backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
-          <Brand href="/" />
-          <nav className="hidden items-center gap-6 text-sm text-muted-foreground md:flex">
-            <Link href="/" className="hover:text-foreground">Home</Link>
-            <Link href="/#features" className="hover:text-foreground">Features</Link>
-            <Link href="/#companies" className="hover:text-foreground">For companies</Link>
-            <Link href="/#faq" className="hover:text-foreground">FAQ</Link>
-            <Link href="/contact" className="font-medium text-primary">Contact</Link>
-          </nav>
-          <div className="flex items-center gap-2">
-            <ThemeToggle />
-            {user ? (
-              <Button asChild>
-                <Link href={ROLE_HOME[user.role]}>Go to dashboard</Link>
-              </Button>
-            ) : (
-              <Button asChild>
-                <Link href="/register">Get started</Link>
-              </Button>
-            )}
-          </div>
-        </div>
-      </header>
+      <PublicHeader active="Contact" />
 
       <main className="flex-1">
         {/* Hero */}

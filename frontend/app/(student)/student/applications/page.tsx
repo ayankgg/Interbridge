@@ -46,22 +46,34 @@ export default function ApplicationsPage() {
               app.status !== ApplicationStatus.WITHDRAWN &&
               app.status !== ApplicationStatus.HIRED;
             return (
-              <Card key={app._id}>
-                <CardContent className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
-                  <div className="min-w-0 space-y-1">
-                    <div className="flex items-center gap-2">
-                      <p className="truncate font-medium">
-                        {internship?.title ?? 'Internship'}
+              <Card key={app._id} className="transition-colors hover:border-primary/40">
+                <CardContent className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center">
+                  {/* Left: icon + title + meta (grows to fill the row) */}
+                  <div className="flex min-w-0 flex-1 items-start gap-3">
+                    <span className="hidden h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary sm:flex">
+                      <Briefcase className="h-5 w-5" />
+                    </span>
+                    <div className="min-w-0 space-y-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <p className="truncate font-medium">
+                          {internship?.title ?? 'Internship'}
+                        </p>
+                        <ApplicationStatusBadge status={app.status} />
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        Applied {new Date(app.createdAt).toLocaleDateString()}
+                        {internship?.location?.city ? ` · ${internship.location.city}` : ''}
+                        {internship?.stipend?.amount
+                          ? ` · ₹${internship.stipend.amount.toLocaleString('en-IN')}/${internship.stipend.period}`
+                          : ''}
                       </p>
-                      <ApplicationStatusBadge status={app.status} />
                     </div>
-                    <p className="text-xs text-muted-foreground">
-                      Applied {new Date(app.createdAt).toLocaleDateString()}
-                      {internship?.location?.city ? ` · ${internship.location.city}` : ''}
-                    </p>
                   </div>
-                  <div className="flex items-center gap-3">
+
+                  {/* Right: grouped card-form cluster (match + actions) */}
+                  <div className="flex shrink-0 items-center gap-2 rounded-xl border bg-muted/30 px-3 py-2 sm:gap-3">
                     <MatchScoreBadge score={app.matchScore} />
+                    <div className="hidden h-6 w-px bg-border sm:block" />
                     {internship && (
                       <Button variant="outline" size="sm" asChild>
                         <Link href={`/student/internships/${internship._id}`}>View</Link>

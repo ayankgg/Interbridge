@@ -70,8 +70,14 @@ export async function parseResume(buffer: Buffer, mimeType: string): Promise<Par
   }
 
   if (parsed.wordCount < 30) {
+    // Distinguish the two very different causes so the guidance is actionable.
+    if (parsed.wordCount === 0) {
+      throw AppError.unprocessable(
+        'No text could be read from this file — if it is a scanned or image-only PDF, please upload a text-based PDF or DOCX.'
+      );
+    }
     throw AppError.unprocessable(
-      'We could not extract enough text — if this is a scanned/image PDF, please upload a text-based PDF or DOCX.'
+      `Your resume looks too short to analyze (only ${parsed.wordCount} word${parsed.wordCount === 1 ? '' : 's'} found). Add more detail — a summary, skills, education and projects — then try again. Tip: use “Build my resume” to generate a complete one.`
     );
   }
   return parsed;

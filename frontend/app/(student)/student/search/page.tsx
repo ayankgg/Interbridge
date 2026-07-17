@@ -1,6 +1,7 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Search as SearchIcon, Sparkles, X, TrendingUp } from 'lucide-react';
 import { EmptyState } from '@/components/shared/empty-state';
 import { ErrorState } from '@/components/shared/error-state';
@@ -29,10 +30,27 @@ import { useInternshipStore } from '@/store/internship.store';
 const QUICK_SKILLS = ['React', 'Node', 'Python', 'JavaScript', 'UI/UX'];
 
 export default function StudentSearchPage() {
+  const searchParams = useSearchParams();
   const filters = useInternshipStore((s) => s.filters);
   const setFilter = useInternshipStore((s) => s.setFilter);
+  const setFilters = useInternshipStore((s) => s.setFilters);
   const setPage = useInternshipStore((s) => s.setPage);
   const resetFilters = useInternshipStore((s) => s.resetFilters);
+
+  // Seed filters from the navbar's internships mega-menu (?city=, ?skills=, ?remote=).
+  useEffect(() => {
+    const city = searchParams.get('city');
+    const skills = searchParams.get('skills');
+    const remote = searchParams.get('remote');
+    if (city || skills || remote) {
+      setFilters({
+        ...(city ? { city } : {}),
+        ...(skills ? { skills } : {}),
+        ...(remote === 'true' ? { remote: true } : {}),
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const { data, isLoading, isError, refetch } = useInternships(filters);
   const { data: saved } = useSavedInternships({ limit: 100 });

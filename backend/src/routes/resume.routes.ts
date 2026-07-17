@@ -12,6 +12,9 @@ router.use(authenticate, authorize(UserRole.STUDENT));
 // Upload + analyze (rate-limited: parsing + AI are expensive)
 router.post('/', aiLimiter, uploadResume, verifyFileSignature('resume'), resumeController.upload);
 
+// Analyze from raw text (the in-app resume builder) — no file parsing
+router.post('/text', aiLimiter, resumeController.analyzeText);
+
 // Reports & history
 router.get('/versions', resumeController.versions);
 router.get('/latest', resumeController.latest);

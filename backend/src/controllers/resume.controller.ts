@@ -15,6 +15,14 @@ export const upload = catchAsync(async (req: Request, res: Response) => {
   sendSuccess(res, 201, version);
 });
 
+export const analyzeText = catchAsync(async (req: Request, res: Response) => {
+  const text = typeof req.body?.text === 'string' ? req.body.text : '';
+  if (!text.trim()) throw AppError.badRequest('No resume text provided');
+  const name = typeof req.body?.name === 'string' ? req.body.name : undefined;
+  const version = await resumeService.analyzeFromText(req.user!.id, { text, name });
+  sendSuccess(res, 201, version);
+});
+
 export const versions = catchAsync(async (req: Request, res: Response) => {
   const items = await resumeService.listVersions(req.user!.id);
   sendSuccess(res, 200, items);

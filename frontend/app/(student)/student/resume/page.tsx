@@ -130,6 +130,28 @@ export default function ResumePage() {
         }
       />
 
+      {/* Don't have a resume? Build one */}
+      <Card className="border-primary/30 bg-primary/5">
+        <CardContent className="flex flex-col items-start justify-between gap-3 p-5 sm:flex-row sm:items-center">
+          <div className="flex items-start gap-3">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+              <Sparkles className="h-5 w-5" />
+            </span>
+            <div>
+              <p className="font-semibold">Don&apos;t have a resume yet?</p>
+              <p className="text-sm text-muted-foreground">
+                Answer a few questions — we pre-fill from your profile — and generate a clean PDF resume in minutes.
+              </p>
+            </div>
+          </div>
+          <Button asChild>
+            <Link href="/student/resume/build">
+              Build my resume <ArrowRight className="ml-1 h-4 w-4" />
+            </Link>
+          </Button>
+        </CardContent>
+      </Card>
+
       {/* Upload / re-analyze */}
       <Card>
         <CardHeader>

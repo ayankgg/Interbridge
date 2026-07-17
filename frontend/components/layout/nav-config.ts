@@ -48,6 +48,7 @@ export const COMPANY_NAV: NavItem[] = [
   { label: 'Post Internship', href: '/company/internships/new', icon: PlusCircle },
   { label: 'Applicants', href: '/company/applicants', icon: Users },
   { label: 'Hiring Pipeline', href: '/company/pipeline', icon: GitBranch },
+  { label: 'Analytics', href: '/company/analytics', icon: BarChart3 },
   { label: 'Company Profile', href: '/company/profile', icon: Building2 },
   { label: 'Notifications', href: '/company/notifications', icon: Bell },
   { label: 'Help', href: '/company/help', icon: HelpCircle },

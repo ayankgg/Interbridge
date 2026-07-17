@@ -19,6 +19,10 @@ export const resumeService = {
     return res.data.data;
   },
 
+  // Analyze a resume built in-app (raw text) — bypasses PDF parsing.
+  analyzeText: (text: string, name?: string) =>
+    http.post<ResumeVersion>('/resume/text', { text, name }),
+
   versions: () => http.get<ResumeVersion[]>('/resume/versions'),
   latest: () => http.get<ResumeVersion | null>('/resume/latest'),
   dashboard: () => http.get<ResumeDashboard>('/resume/dashboard'),
